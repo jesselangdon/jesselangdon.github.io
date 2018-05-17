@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Riverscapes Data Products</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<style>
+    #menu {
+        background: #fff;
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0,0,0,0.4);
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
+</style>
+
+<nav id="menu"></nav>
+<div id="map"></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2VsYW5nZG9uIiwiYSI6Ik95UXU5NzAifQ.pWjhVfOGoElD6u8shUEBlw';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/jesselangdon/cjaofaiol22j42rqoar7jzy5c',
+
+    zoom: 7,
+    center: [-115.660,46.115]
+});
+
+map.on('load', function () {
+    map.addSource('conductivity-chwpaw', {
+        type: 'vector',
+        url: 'mapbox://jesselangdon.1atu1362' 
+    });
+    map.addLayer({
+        "id": "conductivity",
+        "type": "line",
+        "source": "conductivity-chwpaw",
+        "source-layer": "conductivity-chwpaw",
+        "minzoom": 8.2,
+        "filter": [
+            "==",
+            "$type",
+            "LineString"
+        ],
+        "layout": {
+            "visibility": "visible",
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": {
+                "base": 1,
+                "type": "interval",
+                "property": "prdcond",
+                "stops": [
+                    [40,"#ECB8FF"],
+                    [80,"#CF9EE1"],
+                    [120,"#B285C3"],
+                    [160,"#966CA5"],
+                    [200,"#795287"],
+                    [240,"#5C3969"],
+                    [280,"#40204C"]
+                ],
+                "default": "hsl(0, 0%, 50%)"
+            },
+            "line-width": 2
+        }
+    });
+
+    map.addSource('confinement-73uw1c', {
+        type: 'vector',
+        url: 'mapbox://jesselangdon.b0ru17wi'
+    })
+    map.addLayer({
+        "id": "confinement",
+        "type": "line",
+        "metadata": {},
+        "source": "confinement-73uw1c",
+        "source-layer": "confinement-73uw1c",
+        "minzoom": 8.2,
+        "filter": [
+            "==",
+            "$type",
+            "LineString"
+        ],
+        "layout": {
+            "visibility": "visible",
+            "line-cap": "round",
+            "line-join": "round"
+        },
+        "paint": {
+            "line-color": {
+                "base": 1,
+                "type": "interval",
+                "property": "CONF_Value",
+                "stops": [
+                    [0.2,"#8e0301"],
+                    [0.3,"#98110f"],
+                    [0.4,"#a3201e"],
+                    [0.5,"#ae2e2d"],
+                    [0.6,"#b93d3c"],
+                    [0.7,"#c34c4a"],
+                    [0.8,"#ce5a59"],
+                    [0.9,"#d96968"],
+                    [1,"#e47877"]
+                ],
+                "default": "hsl(0, 0%, 50%)"
+            },
+            "line-width": 2
+        }
+    });
+
+    map.addSource('solar-aq8dd2', {
+        type: 'vector',
+        url: 'mapbox://jesselangdon.6qtnx57k'
+    });
+    map.addLayer({
+        "id": "solar",
+        "type": "line",
+        "source": "solar-aq8dd2",
+        "source-layer": "solar-aq8dd2",
+        "minzoom": 8.2,
+        "filter": [
+            "==",
+            "$type",
+            "LineString"
+        ],
+        "layout": {
+            "visibility": "visible",
+            "line-cap": "round",
+            "line-join": "round",
+            "line-round-limit": 1
+        },
+        "paint": {
+            "line-color": {
+                "base": 1,
+                "type": "interval",
+                "property": "area_solar",
+                "stops": [
+                    [100000,"#3869FF"],
+                    [150000,"#2FE8FF"],
+                    [200000,"#27FF8C"],
+                    [250000,"#44FF1E"],
+                    [300000,"#D2FF16"],
+                    [350000,"#FF920D"],
+                    [1000000,"#FF051A"]
+                ],
+                "default": "hsl(0, 0%, 50%)"
+            },
+            "line-width": 2
+        }
+    });
+});
+
+var toggleableLayerIds = [ 'conductivity', 'confinement', 'solar' ];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+}
+
+</script>
+
+</body>
+</html>
