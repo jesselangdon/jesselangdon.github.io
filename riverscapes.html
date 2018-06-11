@@ -4,228 +4,125 @@
     <meta charset='utf-8' />
     <title>Riverscapes Data Products</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
     <style>
-        body { margin:0; padding:0; }
-        #map { position:absolute; top:0; bottom:0; width:100%; }
+        body { 
+            font: 500 12px/16px 'Helvetica Neue', Helvetica, Arial, Sans-serif;
+            margin:0; 
+            padding:0; }
+        h1 {
+          font-size: 18px;
+          margin: 0;
+          font-weight: 400;
+          line-height: 20px;
+          padding: 10px 2px;
+        }
+        .map {
+            position: absolute;
+            right: 25%;
+            width: 75%;
+            top: 0;
+            bottom: 0;
+        }
+        .header {
+            background: #ddd;
+            height: 40px;
+            line-height: 30px;
+            padding: 0 10px;
+        }
+        .sidebar {
+            position: absolute;
+            width: 25%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            overflow: hidden;
+            border-left: 1px solid rgba(0,0,0,0.3);
+        }
+        .pad2 {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        #menu {
+            background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
+        .block {
+            display: block;
+        }
+        .sidepanel {
+            background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
+        #legend {
+            background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
 
-<style>
-    #menu {
-        background: #fff;
-        position: absolute;
-        z-index: 1;
-        top: 10px;
-        right: 10px;
-        border-radius: 3px;
-        width: 120px;
-        border: 1px solid rgba(0,0,0,0.4);
-        font-family: 'Open Sans', sans-serif;
-    }
-
-    #menu a {
-        font-size: 13px;
-        color: #404040;
-        display: block;
-        margin: 0;
-        padding: 0;
-        padding: 10px;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(0,0,0,0.25);
-        text-align: center;
-    }
-
-    #menu a:last-child {
-        border: none;
-    }
-
-    #menu a:hover {
-        background-color: #f8f8f8;
-        color: #404040;
-    }
-
-    #menu a.active {
-        background-color: #3887be;
-        color: #ffffff;
-    }
-
-    #menu a.active:hover {
-        background: #3074a4;
-    }
-</style>
-
-<nav id="menu"></nav>
-<div id="map"></div>
+<div id='map' class='map pad2'></div>
+<div class='sidebar'>
+    <div class='header'>
+        <h1>Riverscapes Data Products</h1>
+    </div>
+    <div class='sidepanel'>
+        <p>Sample of geospatial data products developed for
+        the <a href="https://github.com/Riverscapes" target="_blank">Riverscapes</a> project. Please select a data
+        layer to display and review.</p>
+    </div>
+    <div id='menu'>
+        <label class="block" for='conductivity'><input id='cjatvi6f7683x2rmpfcoevu94' type='radio' name='rtoggle' value='conductivity' checked='checked'>Electrical Conductivity</label>
+        <label class="block" for='confinement'><input id='cjatvtnmx99582rmsh3nxzpnp' type='radio' name='rtoggle' value='confinement'>Channel Confinement</label>
+        <label class="block" for='solar'><input id='cjatump9j0zqg2sny3ty522zl' type='radio' name='rtoggle' value='solar'>Solar Radiation</label>
+    </div>
+    <div id="legend">
+        <h4>Electrical Conductivity</h4>
+        <p>Electrical conductivity is a potential indicator for macroinvertabrate species richness, and is another component of gross primary productivity. This data is the result of predicting conductivity and summarizing upstream conductivity values for each stream segments.<br />
+        <p>μS cm<sup>−1</sup></p>
+        <img src=./assets/legend_cond.png>
+    </div>
+</div>
 
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2VsYW5nZG9uIiwiYSI6Ik95UXU5NzAifQ.pWjhVfOGoElD6u8shUEBlw';
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/jesselangdon/cjaofaiol22j42rqoar7jzy5c',
-
-    zoom: 7,
+    style: 'mapbox://styles/jesselangdon/cjatvi6f7683x2rmpfcoevu94',
+    zoom: 9,
     center: [-115.660,46.115]
-});
-
-map.on('load', function () {
-    map.addSource('conductivity-chwpaw', {
-        type: 'vector',
-        url: 'mapbox://jesselangdon.1atu1362' 
-    });
-    map.addLayer({
-        "id": "conductivity",
-        "type": "line",
-        "source": "conductivity-chwpaw",
-        "source-layer": "conductivity-chwpaw",
-        "minzoom": 8.2,
-        "filter": [
-            "==",
-            "$type",
-            "LineString"
-        ],
-        "layout": {
-            "visibility": "visible",
-            "line-join": "round",
-            "line-cap": "round"
-        },
-        "paint": {
-            "line-color": {
-                "base": 1,
-                "type": "interval",
-                "property": "prdcond",
-                "stops": [
-                    [40,"#ECB8FF"],
-                    [80,"#CF9EE1"],
-                    [120,"#B285C3"],
-                    [160,"#966CA5"],
-                    [200,"#795287"],
-                    [240,"#5C3969"],
-                    [280,"#40204C"]
-                ],
-                "default": "hsl(0, 0%, 50%)"
-            },
-            "line-width": 2
-        }
     });
 
-    map.addSource('confinement-73uw1c', {
-        type: 'vector',
-        url: 'mapbox://jesselangdon.b0ru17wi'
-    })
-    map.addLayer({
-        "id": "confinement",
-        "type": "line",
-        "metadata": {},
-        "source": "confinement-73uw1c",
-        "source-layer": "confinement-73uw1c",
-        "minzoom": 8.2,
-        "filter": [
-            "==",
-            "$type",
-            "LineString"
-        ],
-        "layout": {
-            "visibility": "visible",
-            "line-cap": "round",
-            "line-join": "round"
-        },
-        "paint": {
-            "line-color": {
-                "base": 1,
-                "type": "interval",
-                "property": "CONF_Value",
-                "stops": [
-                    [0.2,"#8e0301"],
-                    [0.3,"#98110f"],
-                    [0.4,"#a3201e"],
-                    [0.5,"#ae2e2d"],
-                    [0.6,"#b93d3c"],
-                    [0.7,"#c34c4a"],
-                    [0.8,"#ce5a59"],
-                    [0.9,"#d96968"],
-                    [1,"#e47877"]
-                ],
-                "default": "hsl(0, 0%, 50%)"
-            },
-            "line-width": 2
-        }
-    });
+// switch between layers on radio button click
+var layerList = document.getElementById('menu');
+var inputs = layerList.getElementsByTagName('input');
 
-    map.addSource('solar-aq8dd2', {
-        type: 'vector',
-        url: 'mapbox://jesselangdon.6qtnx57k'
-    });
-    map.addLayer({
-        "id": "solar",
-        "type": "line",
-        "source": "solar-aq8dd2",
-        "source-layer": "solar-aq8dd2",
-        "minzoom": 8.2,
-        "filter": [
-            "==",
-            "$type",
-            "LineString"
-        ],
-        "layout": {
-            "visibility": "visible",
-            "line-cap": "round",
-            "line-join": "round",
-            "line-round-limit": 1
-        },
-        "paint": {
-            "line-color": {
-                "base": 1,
-                "type": "interval",
-                "property": "area_solar",
-                "stops": [
-                    [100000,"#3869FF"],
-                    [150000,"#2FE8FF"],
-                    [200000,"#27FF8C"],
-                    [250000,"#44FF1E"],
-                    [300000,"#D2FF16"],
-                    [350000,"#FF920D"],
-                    [1000000,"#FF051A"]
-                ],
-                "default": "hsl(0, 0%, 50%)"
-            },
-            "line-width": 2
-        }
-    });
-});
-
-var toggleableLayerIds = [ 'conductivity', 'confinement', 'solar' ];
-
-for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
-
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-
-    link.onclick = function (e) {
-        var clickedLayer = this.textContent;
-        e.preventDefault();
-        e.stopPropagation();
-
-        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-
-        if (visibility === 'visible') {
-            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-            this.className = '';
-        } else {
-            this.className = 'active';
-            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        }
-    };
-
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
+function switchLayer(layer) {
+    var layerId = layer.target.id
+    var layerValue = layer.target.value;
+    map.setStyle('mapbox://styles/jesselangdon/' + layerId);
+    divLegend = document.getElementById("legend")
+    if (layerValue == 'confinement') {
+        divLegend.innerHTML = "<h4>Channel Confinement</h4><p>Confinement, which is one of the primary controls of river morphology, is calculated by dividing floodplain width by channel width. This is a unitless measure.</p><br /><img src=./assets/legend_conf.png>";
+    } else if (layerValue == 'solar') {
+        divLegend.innerHTML = "<h4>Solar Radiation</h4><p>Solar radiation was calculated as a proxy for shading of water surfaces in a drainage network. This serves as an important component of gross primary production for salmon life-cycle modeling. The Solar Radiation dataset is the result of summarizing upstream solar radiation values for each stream segment feature</p><br /><p>Watt hours/sq. meter</p><img src=./assets/legend_solar.png>";
+    } else {
+        divLegend.innerHTML = "<h4>Electrical Conductivity</h4><p>Electrical conductivity is a potential indicator for macroinvertabrate species richness, and is another component of gross primary productivity. This data is the result of predicting conductivity and summarizing upstream conductivity values for each stream segment feature.<br /><p>μS cm<sup>−1</sup></p><img src=./assets/legend_cond.png>";
+    }
 }
 
+for (var i = 0; i < inputs.length; i++) {
+    inputs[i].onclick = switchLayer;
+    }
+
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
 </script>
 
 </body>
